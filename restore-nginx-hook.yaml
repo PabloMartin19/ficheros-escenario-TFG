@@ -1,0 +1,21 @@
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: restore-nginx
+  namespace: velero
+spec:
+  backupName: backup-nginx
+  hooks:
+    resources:
+      - name: deployment/nginx-deployment
+        includedNamespaces:
+          - default
+        postHooks:
+          - exec:
+              container: nginx
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  mkdir -p /tmp/hooks &&
+                  echo 'Restauración completa: Hook ejecutado' >> /tmp/hooks/hook.log
